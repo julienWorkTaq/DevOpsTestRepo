@@ -14,6 +14,7 @@ variables:
 steps:
 - script: |
     echo "Installing Power Platform CLI"
+    npm config set strict-ssl false
     npm install -g pac-cli
   displayName: 'Install Power Platform CLI'
 
