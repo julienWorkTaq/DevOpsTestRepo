@@ -48,17 +48,18 @@ steps:
     cd ..
 
     echo "Copying updated files to the Azure DevOps repository"
-    cp -R repo-github/* .
+    xcopy repo-github\* . /s /e /y
 
     echo "Checking for changes"
-    if [ -n "$(git status --porcelain)" ]; then
+    git status --porcelain
+    if errorlevel 1 (
       echo "Changes detected, committing and pushing"
       git add .
       git commit -m "Updated from GitHub repository"
       git push origin $(Build.SourceBranchName)
-    else
+    ) else (
       echo "No changes to commit"
-    fi
+    )
   displayName: 'Update Azure DevOps Repository'
 
 - task: PowerShell@2
