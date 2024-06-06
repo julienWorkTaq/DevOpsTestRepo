@@ -1,8 +1,8 @@
 trigger:
-- main
+- branche_dev
 
 pool:
-  name: 'Self-hosted Pool'  # Remplacez par le nom de votre pool d'agents auto-hébergé
+  name: 'poolagenttest'   # Remplacez par le nom de votre pool d'agents auto-hébergé
 
 variables:
   environmentUrl: 'https://dev.azure.com/TribunalAdministratifQuebec'
