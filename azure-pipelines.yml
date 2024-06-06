@@ -41,7 +41,7 @@ steps:
       echo "Changes detected, committing and pushing"
       git add .
       git commit -m "Automated commit from Azure DevOps pipeline"
-      git push origin main
+      git push origin branche_dev
     else
       echo "No changes to commit"
     fi
