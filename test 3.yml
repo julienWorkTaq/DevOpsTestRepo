@@ -67,10 +67,12 @@ steps:
     targetType: 'inline'
     script: |
       try {
-        pac auth create --url $(environmentUrl) || throw "Failed to authenticate"
-        pac solution export --name $(solutionName) --path $(exportPath) --managed false || throw "Failed to export solution"
+        Write-Output "Authenticating with Power Platform"
+        pac auth create --url $(environmentUrl)
+        Write-Output "Exporting solution"
+        pac solution export --name $(solutionName) --path $(exportPath) --managed false
       } catch {
-        Write-Error $_.Exception.Message
+        Write-Error "An error occurred: $_"
         exit 1
       }
   displayName: 'Export Power Platform Solution'
