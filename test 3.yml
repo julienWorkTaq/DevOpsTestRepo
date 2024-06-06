@@ -1,0 +1,84 @@
+trigger:
+- main
+- branche_dev
+- branche_prod
+
+pool:
+  name: 'poolagenttest'  # Remplacez par le nom de votre pool d'agents auto-hébergé
+
+variables:
+  # Variables pour GitHub
+  githubRepoUrl: 'https://github.com/julienWorkTaq/DevOpsTestRepo.git'  # URL du dépôt GitHub
+  githubBranchName: '$(Build.SourceBranchName)'  # Branche du dépôt GitHub
+
+  # Variables pour Git
+  gitUserName: 'julienWorkTaq'
+  gitUserEmail: 'julien.veret@taq.gouv.qc.ca'
+
+  # Variables pour Power Platform
+  environmentUrl: 'org811954d1.crm3.dynamics.com'
+  solutionName: 'YourSolutionName'
+  exportPath: '$(Build.ArtifactStagingDirectory)/solution'
+
+steps:
+- script: |
+    echo "Configuring NPM to ignore SSL self-signed certificate"
+    npm config set strict-ssl false
+    echo "Installing Power Platform CLI"
+    npm install -g pac-cli
+  displayName: 'Install Power Platform CLI'
+
+- script: |
+    echo "Cloning GitHub repository"
+    git clone $(githubRepoUrl) repo-github
+  displayName: 'Clone GitHub Repository'
+
+- script: |
+    echo "Navigating to the cloned repository"
+    cd repo-github
+
+    echo "Configuring Git user"
+    git config --global user.name $(gitUserName)
+    git config --global user.email $(gitUserEmail)
+
+    echo "Pulling the latest changes from GitHub"
+    git pull origin $(githubBranchName)
+
+    echo "Navigating back to the original directory"
+    cd ..
+
+    echo "Copying updated files to the Azure DevOps repository"
+    cp -R repo-github/* .
+
+    echo "Checking for changes"
+    if [ -n "$(git status --porcelain)" ]; then
+      echo "Changes detected, committing and pushing"
+      git add .
+      git commit -m "Updated from GitHub repository"
+      git push origin $(Build.SourceBranchName)
+    else
+      echo "No changes to commit"
+    fi
+  displayName: 'Update Azure DevOps Repository'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      try {
+        pac auth create --url $(environmentUrl) || throw "Failed to authenticate"
+        pac solution export --name $(solutionName) --path $(exportPath) --managed false || throw "Failed to export solution"
+      } catch {
+        Write-Error $_.Exception.Message
+        exit 1
+      }
+  displayName: 'Export Power Platform Solution'
+
+- script: |
+    echo "Running tests"
+    # Ajoutez ici les commandes spécifiques pour exécuter vos tests
+  displayName: 'Run Tests'
+
+env:
+  SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
