@@ -16,7 +16,7 @@ variables:
 
   # Variables pour Power Platform
   environmentUrl: 'org811954d1.crm3.dynamics.com'
-  solutionName: 'YourSolutionName'
+  solutionName: 'devopsTestSolution'
   exportPath: '$(Build.ArtifactStagingDirectory)/solution'
 
 steps:
