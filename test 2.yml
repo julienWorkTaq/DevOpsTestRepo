@@ -1,0 +1,29 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- branche_dev
+
+pool:
+  name: 'poolagenttest' # Remplacez par le nom de votre pool d'agents auto-hébergé
+
+variables:
+  solutionName: 'devopsTestSolution'
+  exportPath: '$(Build.ArtifactStagingDirectory)/solution'
+  environmentUrl: 'https://dev.azure.com/TribunalAdministratifQuebec'
+  gitUserName: 'julienWorkTaq'
+  gitUserEmail: 'julien.veret@taq.gouv.qc.ca'
+  branchName: 'branche_dev'
+  commitMessage: 'Automated commit from Azure DevOps pipeline'
+
+steps:
+- script: |
+    echo "Configuring NPM to ignore SSL self-signed certificate"
+    npm config set strict-ssl false
+    echo "Installing Power Platform CLI"
+    npm install -g pac-cli
+  displayName: 'Install Power Platform CLI'
+
+ 
