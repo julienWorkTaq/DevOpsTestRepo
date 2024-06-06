@@ -73,12 +73,10 @@ steps:
         exit 1
       }
   displayName: 'Export Power Platform Solution'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
 
 - script: |
     echo "Running tests"
     # Ajoutez ici les commandes spécifiques pour exécuter vos tests
   displayName: 'Run Tests'
-
-env:
-  SYSTEM_ACCESSTOKEN: $(System.AccessToken)
-
