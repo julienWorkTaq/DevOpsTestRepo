@@ -39,6 +39,7 @@ steps:
     echo "Configuring Git user"
     git config --global user.name $(gitUserName)
     git config --global user.email $(gitUserEmail)
+    git config pull.rebase false  # Utilisation de la stratégie merge
 
     echo "Pulling the latest changes from GitHub"
     git pull origin $(githubBranchName)
